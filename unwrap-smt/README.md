@@ -68,11 +68,17 @@ How to run:
 export DEBEZIUM_VERSION=1.0
 docker-compose -f docker-compose-jdbc.yaml up
 
-# Start PostgreSQL connector
-curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @jdbc-sink.json
+# Start SINK connector
+export SINK_USER=XYZ
+export SINK_PASSWORD=XYZ
+SINK_FILE=$(envsubst < jdbc-sink.json)
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d "'$SINK_FILE'"
 
-# Start MySQL connector
-curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @source.json
+# Start SOURCE connector
+export SOURCE_USER=XYZ
+export SOURCE_PASSWORD=XYZ
+SOURCE_FILE=$(envsubst < source.json)
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d "'$SOURCE_FILE'"
 ```
 
 Check contents of the MySQL database:
